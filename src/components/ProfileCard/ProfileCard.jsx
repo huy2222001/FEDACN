@@ -1,0 +1,43 @@
+import React from 'react'
+import Cover from '../../img/bggray.jpg'
+import Profile from '../../img/logouser.jpg'
+import './ProfileCard.css'
+const ProfileCard = () => {
+  return (
+    <div className='ProfileCard'>
+        <div className="ProfileImages">
+            <img src={Cover} alt=""/>
+            <img src={Profile} alt=""/>
+        </div>
+        <div className="ProfileName">
+            <span>
+                name
+            </span>
+            <span>
+                About
+            </span>
+        </div>
+        <div className="followStatus">
+            <hr />
+            <div>
+                <div className='follow'>
+                    <span>Number</span>
+                    <span>Followings</span>
+                </div>
+                <div className="vl"></div>
+                <div className='follow'>
+                    <span>Number</span>
+                    <span>Followers</span>
+                </div>
+                
+            </div>
+            <hr />
+        </div>
+        <span>
+            My Profile
+        </span>
+    </div>
+  )
+}
+
+export default ProfileCard

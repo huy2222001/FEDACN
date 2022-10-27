@@ -4,22 +4,50 @@ import "./PostShare.css";
 import { UilScenery } from "@iconscout/react-unicons";
 import { UilPlayCircle } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImage, uploadPost } from "../../actions/uploadAction";
 const PostShare = () => {
+  const dispatch = useDispatch();
+  const desc = useRef();
+  const { user } = useSelector((state) => state.authReducer.authData);
   const [image, setImage] = useState(null);
   const imageRef = useRef();
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
-      setImage({
-        image: URL.createObjectURL(img),
-      });
+      setImage(img);
     }
   };
+  const handleSubmit = (e)=> {
+    e.preventDefault();
+
+    const newPost = {
+      userId: user._id,
+      desc: desc.current.value
+    }
+    if (image){
+      const data = new FormData();
+      const  filename = Date.now() + image.name;
+      data.append("name", filename);
+      data.append("file", image);
+      newPost.image = filename;
+      console.log(newPost);
+      try {
+        dispatch(uploadImage(data));
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    dispatch(uploadPost(newPost));
+  }
   return (
     <div className='PostShare'>
         <img src={ProfileImage} alt="" />
         <div>
-            <input type="text" placeholder='Post something' />
+            <input 
+            ref={desc}
+            required
+            type="text" placeholder='Post something' />
             <div className="postOptions">
             <div className="option" style={{color:"var(--photo)"}} onClick={()=>imageRef.current.click()}>
                 <UilScenery/>
@@ -29,7 +57,10 @@ const PostShare = () => {
                 <UilPlayCircle/>
                 Video
             </div>
-            <button className="button ps-button">Share</button>
+            <button className="button ps-button"
+              onClick={handleSubmit}
+            
+            >Share</button>
             <div style={{display: "none"}}>
                 <input type="file" name="myImage" ref={imageRef} onChange={onImageChange}/>
             </div>
@@ -37,7 +68,7 @@ const PostShare = () => {
         {image && (
             <div className="previewImage">
                 <UilTimes onClick={()=>setImage(null)}/>
-                <img src={image.image} alt="" />
+                <img src={URL.createObjectURL(image)} alt="" />
             </div>
         )}
         </div>
